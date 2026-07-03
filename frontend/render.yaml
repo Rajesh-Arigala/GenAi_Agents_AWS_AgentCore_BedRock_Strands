@@ -3,10 +3,12 @@ services:
     name: agentcore-meal-planner-ui
     env: python
     plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
+    buildCommand: pip install -r frontend/requirements.txt
+    startCommand: gunicorn --chdir frontend app:app
     envVars:
       - key: AWS_REGION
+        value: us-east-1
+      - key: AWS_DEFAULT_REGION
         value: us-east-1
       - key: AGENT_RUNTIME_ARN
         value: arn:aws:bedrock-agentcore:us-east-1:825187895465:runtime/meal_planner_agent-8GOBzZCg4S
