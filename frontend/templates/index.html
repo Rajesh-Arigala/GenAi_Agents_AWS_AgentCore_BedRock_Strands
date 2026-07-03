@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AgentCore Meal Planner</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="workspace" aria-label="AgentCore meal planner workspace">
+        <aside class="panel">
+          <div class="brand">
+            <div class="brand-mark" aria-hidden="true">AC</div>
+            <div>
+              <h1>AgentCore Meal Planner</h1>
+              <p>Strands agent running on AWS Bedrock AgentCore Runtime.</p>
+            </div>
+          </div>
+
+          <div class="architecture" aria-label="Runtime architecture">
+            <div class="node active">Render UI</div>
+            <div class="connector"></div>
+            <div class="node">Flask API</div>
+            <div class="connector"></div>
+            <div class="node accent">AgentCore Runtime</div>
+            <div class="connector"></div>
+            <div class="node">Strands + Memory</div>
+          </div>
+
+          <figure class="runtime-visual">
+            <img src="/static/agentcore-architecture.png" alt="AWS Bedrock AgentCore runtime architecture">
+            <figcaption>AgentCore Runtime deployment pattern</figcaption>
+          </figure>
+
+          <dl class="facts">
+            <div>
+              <dt>Runtime</dt>
+              <dd>AWS Bedrock AgentCore</dd>
+            </div>
+            <div>
+              <dt>Agent Framework</dt>
+              <dd>Strands Agents</dd>
+            </div>
+            <div>
+              <dt>Memory Layer</dt>
+              <dd>AgentCore Memory</dd>
+            </div>
+            <div>
+              <dt>Model</dt>
+              <dd>Amazon Nova 2 Lite</dd>
+            </div>
+            <div>
+              <dt>Tools</dt>
+              <dd>Recipe search, category lookup, calculator</dd>
+            </div>
+          </dl>
+
+          <div class="arn-box">
+            <span>Runtime ARN</span>
+            <code>{{ agent_arn }}</code>
+          </div>
+        </aside>
+
+        <section class="chat-card">
+          <header class="chat-header">
+            <div>
+              <p class="eyebrow">Live cloud agent</p>
+              <h2>Ask for meals, recipes, portions, and preference-aware plans.</h2>
+            </div>
+            <div class="status-pill" id="statusPill">
+              <span class="dot"></span>
+              <span>{{ "Mock mode" if mock_mode else "Runtime ready" }}</span>
+            </div>
+          </header>
+
+          <div class="controls">
+            <label>
+              User memory profile
+              <input id="userId" value="student_001" autocomplete="off">
+            </label>
+            <label>
+              Session
+              <input id="sessionId" autocomplete="off">
+            </label>
+          </div>
+
+          <div class="quick-prompts" aria-label="Suggested prompts">
+            <button type="button" data-prompt="I am vegetarian and allergic to nuts. Suggest a pasta dish.">Vegetarian pasta</button>
+            <button type="button" data-prompt="What should I cook for dinner tonight? Remember my preferences.">Use memory</button>
+            <button type="button" data-prompt="Create a full Italian dinner menu for 4 people: starter, main, and dessert.">Dinner menu</button>
+            <button type="button" data-prompt="Find a chicken recipe and scale it for 6 servings.">Scale recipe</button>
+          </div>
+
+          <div class="messages" id="messages" aria-live="polite">
+            <article class="message assistant">
+              <div class="avatar">AI</div>
+              <div class="bubble">
+                <strong>Ready.</strong>
+                <p>This UI sends your prompt to a Render API, which invokes the AgentCore Runtime ARN using <code>client.invoke_agent_runtime()</code>.</p>
+              </div>
+            </article>
+          </div>
+
+          <form class="composer" id="chatForm">
+            <textarea id="prompt" rows="3" placeholder="Ask the meal planner for recipes, dietary ideas, cuisines, or serving-size changes."></textarea>
+            <button type="submit" id="sendButton">Send</button>
+          </form>
+
+          <footer class="runtime-footer">
+            <span>Region: {{ aws_region }}</span>
+            <span>Qualifier: {{ qualifier }}</span>
+            <span>Build: {{ build_time }}</span>
+          </footer>
+        </section>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
